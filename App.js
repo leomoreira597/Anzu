@@ -8,6 +8,7 @@ import "moment/locale/pt-br";
 import Task from "./src/components/Task";
 import CommonStyles from "./src/CommonStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AddTask from "./src/screens/AddTask";
 
 
 
@@ -17,6 +18,10 @@ export default class TaskList extends React.Component {
   state ={
 
     showDoneTasks: true,
+
+    showAddTASK: true,
+
+    visibleTasks: [],
 
     tasks: [{
       id: Math.random(),
@@ -32,9 +37,13 @@ export default class TaskList extends React.Component {
     }]
   }
 
-  toggleFilter = () => {
-    this.setState({ showDoneTasks: !this.state.showDoneTasks })
+  componentDidMount = () => {
+    this.filterTasks()
   }
+
+    toggleFilter = () => {
+      this.setState({ showDoneTasks: !this.state.showDoneTasks }, this.filterTasks)
+    }
 
   toggleTask = taskId => {
     const tasks = [...this.state.tasks]
@@ -44,14 +53,26 @@ export default class TaskList extends React.Component {
       }
     })
     
-    this.setState({ tasks })
-    
+    this.setState({ tasks }, this.filterTasks)
+  }
+
+  filterTasks = () => {
+      let visibleTasks = null
+      if(this.state.showDoneTasks) {
+        visibleTasks = [...this.state.tasks]
+      }
+      else{
+        const pending = task => task.doneAt === null
+        visibleTasks = this.state.tasks.filter(pending)
+      }
+      this.setState({ visibleTasks })
   }
 
   render() {
     const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
     return (
       <View style={styles.container}>
+        <AddTask isVisible={this.state.showAddTASK} onCancel={() => this.setState({ showAddTASK: false })}/>
         <ImageBackground source={TodayImage} style={styles.background}>
           <View style={styles.iconBar}>
             <TouchableOpacity onPress={this.toggleFilter}>
@@ -65,7 +86,7 @@ export default class TaskList extends React.Component {
           </View>
         </ImageBackground>
         <View style={styles.taskContainer}>
-          <FlatList data={this.state.tasks} keyExtractor={item => `${item.id}`}
+          <FlatList data={this.state.visibleTasks} keyExtractor={item => `${item.id}`}
             renderItem={({item}) => <Task {...item} toggleTask={this.toggleTask} /> } />
         </View>
         <StatusBar style="light" />
