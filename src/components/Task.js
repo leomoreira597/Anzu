@@ -1,35 +1,38 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import CommonStyles from "../CommonStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useFonts } from 'expo-font';
 import moment from 'moment';
 import "moment/locale/pt-br";
 
-interface TaskProps {
-    desc: string
-    estimateAt: Date
-    doneAt?: Date
-}
+// interface TaskProps {
+//     desc: string
+//     estimateAt: Date
+//     doneAt?: Date
+//     toggleTask: () => void
+// }
 
-export default function Task(props: TaskProps) {
+export default function Task(props) {
 
     const doneOrNotStyle = props.doneAt != null ? {
         textDecorationLine: 'line-through'
     } : {}
 
     const [fontsLoaded] = useFonts({
-        'Lato': require('../../assets/fonts/Lato.ttf'),
-      });
+        'Lato': require("../../assets/fonts/Lato.ttf")
+    });
 
-      const date = props.doneAt ? props.doneAt : props.estimateAt
-      const formattedDate = moment(props.estimateAt).locale('pt-br').format('ddd, D [de] MMMM')
+    const date = props.doneAt ? props.doneAt : props.estimateAt
+    const formattedDate = moment(props.estimateAt).locale('pt-br').format('ddd, D [de] MMMM')
 
     return (
         <View style={styles.container}>
-            <View style={styles.checkContainer}>
-                {getCheckView(props.doneAt)}
-            </View>
+            <TouchableWithoutFeedback onPress={() => props.toggleTask(props.id)}>
+                <View style={styles.checkContainer}>
+                    {getCheckView(props.doneAt)}
+                </View>
+            </TouchableWithoutFeedback>
             <View>
                 <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
                 <Text style={styles.date}>{formattedDate}</Text>
@@ -39,19 +42,19 @@ export default function Task(props: TaskProps) {
     );
 }
 
-function getCheckView(doneAt){
+function getCheckView(doneAt) {
 
-    if(doneAt != null){
+    if (doneAt != null) {
         return (
             <View style={styles.done}>
                 <Icon name="check" size={15} color='#FFF' />
             </View>
         )
     }
-    else{
+    else {
         return (
             <View style={styles.pending}>
-                
+
             </View>
         )
     }
