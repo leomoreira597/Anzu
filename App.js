@@ -1,6 +1,15 @@
 import React from "react";
-import { Text, View, SafeAreaView, 
-  ImageBackground, StyleSheet, FlatList, TouchableOpacity, Platform } from "react-native";
+import { 
+  Text, 
+  View, 
+  SafeAreaView, 
+  ImageBackground, 
+  StyleSheet, 
+  FlatList, 
+  TouchableOpacity, 
+  Platform,
+  Alert 
+} from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import TodayImage from "./assets/imgs/today.jpg";
 import moment from "moment";
@@ -68,11 +77,34 @@ export default class TaskList extends React.Component {
       this.setState({ visibleTasks })
   }
 
+  //tentar dar mais uma revisada
+
+  addTask = newTask =>{
+      if(!newTask.desc || !newTask.desc.trim()){
+          Alert.alert('Dados Invalidos', 'Descrição não informada !!')
+          return
+      }
+
+      const tasks = [...this.state.tasks]
+      tasks.push({
+        id: Math.random(),
+        desc: newTask.desc,
+        estimateAt: newTask.date,
+        doneAt: null
+      })
+
+      this.setState({ tasks, showAddTASK: false}, this.filterTasks)
+
+  }
+
   render() {
     const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
     return (
       <View style={styles.container}>
-        <AddTask isVisible={this.state.showAddTASK} onCancel={() => this.setState({ showAddTASK: false })}/>
+        <AddTask isVisible={this.state.showAddTASK} 
+          onCancel={() => this.setState({ showAddTASK: false })}
+            onSave={ this.addTask }/>
+
         <ImageBackground source={TodayImage} style={styles.background}>
           <View style={styles.iconBar}>
             <TouchableOpacity onPress={this.toggleFilter}>
