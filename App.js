@@ -19,12 +19,12 @@ export default class TaskList extends React.Component {
 
     showDoneTasks: true,
 
-    showAddTASK: true,
+    showAddTASK: false,
 
     visibleTasks: [],
 
     tasks: [{
-      id: Math.random(),
+      id: Math.random(), 
       desc: 'Comprar Livro de React',
       estimateAt: new Date(),
       doneAt: new Date()
@@ -89,6 +89,9 @@ export default class TaskList extends React.Component {
           <FlatList data={this.state.visibleTasks} keyExtractor={item => `${item.id}`}
             renderItem={({item}) => <Task {...item} toggleTask={this.toggleTask} /> } />
         </View>
+        <TouchableOpacity style={styles.addButton} activeOpacity={0.7} onPress={() => this.setState({ showAddTASK: true })}>
+            <Icon name="plus" size={20} color={CommonStyles.colors.secondary}/>
+        </TouchableOpacity>
         <StatusBar style="light" />
       </View>
     );
@@ -126,5 +129,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     justifyContent: 'flex-end',
     marginTop: 40
+  },
+  addButton: {
+    position: 'absolute',
+    right: 30,
+    bottom:30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: CommonStyles.colors.today,
+    justifyContent: "center",
+    alignItems: "center"
   }
 })
