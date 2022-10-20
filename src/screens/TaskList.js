@@ -19,6 +19,9 @@ import CommonStyles from "../CommonStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AddTask from "../screens/AddTask";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Font from 'expo-font';
+import axios from "axios";
+import { server, showError } from "../commun";
 
 
 const initialState = {
@@ -27,6 +30,8 @@ const initialState = {
   showAddTASK: false,
 
   visibleTasks: [],
+
+  fontLoaded: false,
 
   tasks: []
 }
@@ -39,9 +44,27 @@ export default class TaskList extends React.Component {
 
   componentDidMount = async () => {
     const stateString = await AsyncStorage.getItem('tasksState')
-    const state = JSON.parse(stateString) || initialState
-    this.setState(state, this.filterTasks)
+    const savedState = JSON.parse(stateString) || initialState
+    this.setState({ showDoneTasks: savedState.showDoneTasks }, this.filterTasks)
+    this.loadTask()
+    await Font.loadAsync({
+      Lato: require("../../assets/fonts/Lato.ttf")
+    });
+    this.setState({ fontLoaded: true });
+    
   }
+
+  loadTask = () => {
+      //const maxDate = moment().endOf('day').toString()
+        axios.get(`http://10.0.2.2:8080/task/taskUser/4/2022-10-19`)
+        .then(res =>{
+          this.setState({ tasks: res.data }, this.filterTasks)
+        })
+        .catch(e => {
+          console.warn(e)
+        })
+  }
+
 
   toggleFilter = () => {
     this.setState({ showDoneTasks: !this.state.showDoneTasks }, this.filterTasks)
@@ -68,26 +91,32 @@ export default class TaskList extends React.Component {
       visibleTasks = this.state.tasks.filter(pending)
     }
     this.setState({ visibleTasks })
-    AsyncStorage.setItem('tasksState', JSON.stringify(this.state))
+    AsyncStorage.setItem('tasksState', JSON.stringify({
+      showDoneTasks: this.state.showDoneTasks
+    }))
   }
 
   //tentar dar mais uma revisada
 
-  addTask = newTask => {
+  addTask = async newTask => {
     if (!newTask.desc || !newTask.desc.trim()) {
       Alert.alert('Dados Invalidos', 'Descrição não informada !!')
       return
     }
 
-    const tasks = [...this.state.tasks]
-    tasks.push({
-      id: Math.random(),
-      desc: newTask.desc,
-      estimateAt: newTask.date,
-      doneAt: null
-    })
+    try{
+      await axios.post(`${server}/task`, {
+        descr: newTask.desc,
+        estimateAt: newTask.date,
+        userId: 4
+      })
+    }
+    catch(e){
+      showError(e)
+    }
 
-    this.setState({ tasks, showAddTASK: false }, this.filterTasks)
+ 
+    this.setState({showAddTASK: false }, this.loadTask)
 
   }
 
@@ -97,6 +126,7 @@ export default class TaskList extends React.Component {
   }
 
   render() {
+    const { fontLoaded } = this.state
     const today = moment().locale('pt-br').format('dddd, D [de] MMMM')
     return (
       <View style={styles.container}>
@@ -144,12 +174,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   title: {
+    fontFamily: 'Lato',
     fontSize: 50,
     color: CommonStyles.colors.secondary,
     marginLeft: 20,
     marginBottom: 20
   },
   subTitle: {
+    fontFamily: 'Lato',
     color: CommonStyles.colors.secondary,
     fontSize: 20,
     marginLeft: 20,

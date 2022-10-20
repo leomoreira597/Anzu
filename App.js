@@ -7,13 +7,17 @@ import TaskList from './src/screens/TaskList';
 const Stack = createNativeStackNavigator();
 
 
-export default function App() {
+export default function App(props) {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Auth" screenOptions={{
                 headerShown: false
             }}>
-                <Stack.Screen name="teste" component={Auth} />
+                <Stack.Screen name="Auth">
+                    {props => (
+                        <Auth {...props} avancar="TaskList" />
+                    )}
+                </Stack.Screen>
                 <Stack.Screen name="TaskList" component={TaskList} />
             </Stack.Navigator>
         </NavigationContainer>
