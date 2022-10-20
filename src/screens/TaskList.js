@@ -55,13 +55,13 @@ export default class TaskList extends React.Component {
   }
 
   loadTask = () => {
-      //const maxDate = moment().endOf('day').toString()
-        axios.get(`http://10.0.2.2:8080/task/taskUser/4/2022-10-19`)
+        const maxDate = moment().format('YYYY-MM-DD')
+        axios.get(`http://10.0.2.2:8080/task/taskUser/4/${maxDate}`)
         .then(res =>{
           this.setState({ tasks: res.data }, this.filterTasks)
         })
         .catch(e => {
-          console.warn(e)
+          Alert.alert('Opps', e)
         })
   }
 

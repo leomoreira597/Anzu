@@ -63,7 +63,7 @@ export default function Task(props) {
                         </View>
                     </TouchableWithoutFeedback>
                     <View>
-                        <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
+                        <Text style={[styles.desc, doneOrNotStyle]}>{props.descr}</Text>
                         <Text style={styles.date}>{formattedDate}</Text>
                     </View>
                     {/* <Text>{props.doneAt + ""}</Text> */}
