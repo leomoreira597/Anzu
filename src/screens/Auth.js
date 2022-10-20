@@ -69,7 +69,7 @@ export default function Auth(props) {
             password: password
         })
         .then(resp =>{
-            axios.defaults.headers.common['Authorization'] = resp.data.token
+            axios.defaults.headers.common['Authorization'] = resp.headers.authorization
             props.navigation.push(props.avancar)
         })
         .catch(e =>{
