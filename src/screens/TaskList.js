@@ -98,26 +98,24 @@ export default class TaskList extends React.Component {
 
   //tentar dar mais uma revisada
 
-  addTask = async newTask => {
-    if (!newTask.desc || !newTask.desc.trim()) {
+  addTask = newTask => {
+    if (!newTask.descr || !newTask.descr.trim()) {
       Alert.alert('Dados Invalidos', 'Descrição não informada !!')
       return
     }
-
-    try{
-      await axios.post(`${server}/task`, {
-        descr: newTask.desc,
-        estimateAt: newTask.date,
-        userId: 4
-      })
-    }
-    catch(e){
+    
+    axios.post(`${server}/task`, {
+      descr: newTask.descr,
+      estimateAt: newTask.date,
+      userId: 4
+    })
+    .then(res =>{
+      Alert.alert("Sucesso!!", "Tarefa cadastrada com sucesso!!!")
+      this.setState({showAddTASK: false }, this.loadTask)
+    })
+    .catch(e =>{
       showError(e)
-    }
-
- 
-    this.setState({showAddTASK: false }, this.loadTask)
-
+    })
   }
 
   deleteTask = id => {

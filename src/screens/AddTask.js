@@ -5,7 +5,7 @@ import CommonStyles from "../CommonStyles";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 
-const initialState = { desc: '', date: new Date(), showDatePicker: false }
+const initialState = { descr: '', date: new Date(), showDatePicker: false }
 
 export default class AddTask extends React.Component{
 
@@ -17,7 +17,7 @@ export default class AddTask extends React.Component{
 
     save = () => {
         const newTask = {
-            desc: this.state.desc,
+            descr: this.state.descr,
             date: this.state.date
         }
 
@@ -63,8 +63,8 @@ export default class AddTask extends React.Component{
                     <Text style={styles.header}>
                         Nova Tarefa
                     </Text>
-                    <TextInput style={styles.input} placeholder="Informe a descrição..."
-                        value={this.state.desc} onChangeText={desc => this.setState({ desc })}/>
+                    <TextInput style={styles.input} placeholder="Informe a descrrição..."
+                        value={this.state.descr} onChangeText={descr => this.setState({ descr })}/>
 
                         {this.getDatePicker()}
 
