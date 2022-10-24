@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Auth from './src/screens/Auth';
 import TaskList from './src/screens/TaskList';
 
+
 const Stack = createNativeStackNavigator();
 
 
@@ -20,6 +21,7 @@ export default function App(props) {
                 </Stack.Screen>
                 <Stack.Screen name="TaskList" component={TaskList} />
             </Stack.Navigator>
+            
         </NavigationContainer>
     );
 }

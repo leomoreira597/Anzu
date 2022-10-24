@@ -25,7 +25,7 @@ import { server, showError } from "../commun";
 
 
 const initialState = {
-  showDoneTasks: true,
+  showDoneTasks: false,
 
   showAddTASK: false,
 
@@ -61,7 +61,7 @@ export default class TaskList extends React.Component {
           this.setState({ tasks: res.data }, this.filterTasks)
         })
         .catch(e => {
-          Alert.alert('Opps', e)
+          Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde" )
         })
   }
 
@@ -71,14 +71,13 @@ export default class TaskList extends React.Component {
   }
 
   toggleTask = taskId => {
-    const tasks = [...this.state.tasks]
-    tasks.forEach(task => {
-      if (task.id === taskId) {
-        task.doneAt = task.doneAt ? null : new Date()
-      }
-    })
-
-    this.setState({ tasks }, this.filterTasks)
+    axios.put(`${server}/task/doneAt/${taskId}`)
+      .then(resp =>{
+        this.loadTask()
+      })
+      .catch(e => {
+        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde" )
+      })
   }
 
   filterTasks = () => {
@@ -114,13 +113,18 @@ export default class TaskList extends React.Component {
       this.setState({showAddTASK: false }, this.loadTask)
     })
     .catch(e =>{
-      showError(e)
+      Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde" )
     })
   }
 
   deleteTask = id => {
-    const tasks = this.state.tasks.filter(task => task.id !== id)
-    this.setState({ tasks }, this.filterTasks)
+    axios.delete(`${server}/task/deleteTask/${id}`)
+    .then(resp =>{
+      this.loadTask()
+    })
+    .catch(e =>{
+      Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde" )
+    })
   }
 
   render() {
