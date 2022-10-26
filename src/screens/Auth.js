@@ -14,12 +14,14 @@ import CommonStyles from "../CommonStyles";
 import { StatusBar } from 'expo-status-bar';
 import AuthInput from "../components/AuthInput";
 import { server, showError,  showSucess} from "../commun";
+import { CommonActions } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
 SplashScreen.preventAutoHideAsync();
 
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -69,8 +71,20 @@ export default function Auth(props) {
             password: password
         })
         .then(resp =>{
+            AsyncStorage.setItem('userData', JSON.stringify(resp.config.data))
             axios.defaults.headers.common['Authorization'] = resp.headers.authorization
-            props.navigation.push(props.avancar)
+            AsyncStorage.setItem('userDataToken', JSON.stringify(resp.headers.authorization))
+            props.navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'Home',
+                            params: resp.config.data
+                        },
+                    ],
+                })
+            )
         })
         .catch(e =>{
             Alert.alert('Algo não deu certo!!', 'Revise seus dados, sua conexão com a internet e tente novamente')

@@ -11,7 +11,10 @@ import {
   Alert
 } from "react-native";
 import { StatusBar } from 'expo-status-bar';
-import TodayImage from "../../assets/imgs/today.jpg";
+import todayImage from "../../assets/imgs/today.jpg";
+import tomorrowImage from "../../assets/imgs/tomorrow.jpg";
+import weekImage from "../../assets/imgs/week.jpg";
+import monthImage from "../../assets/imgs/month.jpg";
 import moment from "moment";
 import "moment/locale/pt-br";
 import Task from "../components/Task";
@@ -25,14 +28,10 @@ import { server, showError } from "../commun";
 
 
 const initialState = {
-  showDoneTasks: false,
-
+  showDoneTasks: true,
   showAddTASK: false,
-
   visibleTasks: [],
-
   fontLoaded: false,
-
   tasks: []
 }
 
@@ -51,33 +50,23 @@ export default class TaskList extends React.Component {
       Lato: require("../../assets/fonts/Lato.ttf")
     });
     this.setState({ fontLoaded: true });
-    
+
   }
 
   loadTask = () => {
-        const maxDate = moment().format('YYYY-MM-DD')
-        axios.get(`http://10.0.2.2:8080/task/taskUser/4/${maxDate}`)
-        .then(res =>{
-          this.setState({ tasks: res.data }, this.filterTasks)
-        })
-        .catch(e => {
-          Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde" )
-        })
+    const maxDate = moment().add({ days: this.props.daysAhead }).format('YYYY-MM-DD')
+    axios.get(`http://10.0.2.2:8080/task/taskUser/4/${maxDate}`)
+      .then(res => {
+        this.setState({ tasks: res.data }, this.filterTasks)
+      })
+      .catch(e => {
+        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde")
+      })
   }
 
 
   toggleFilter = () => {
     this.setState({ showDoneTasks: !this.state.showDoneTasks }, this.filterTasks)
-  }
-
-  toggleTask = taskId => {
-    axios.put(`${server}/task/doneAt/${taskId}`)
-      .then(resp =>{
-        this.loadTask()
-      })
-      .catch(e => {
-        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde" )
-      })
   }
 
   filterTasks = () => {
@@ -95,6 +84,18 @@ export default class TaskList extends React.Component {
     }))
   }
 
+  toggleTask = taskId => {
+    axios.put(`${server}/task/doneAt/${taskId}`)
+      .then(resp => {
+        this.loadTask()
+      })
+      .catch(e => {
+        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde")
+      })
+  }
+
+
+
   //tentar dar mais uma revisada
 
   addTask = newTask => {
@@ -102,29 +103,48 @@ export default class TaskList extends React.Component {
       Alert.alert('Dados Invalidos', 'Descrição não informada !!')
       return
     }
-    
+
     axios.post(`${server}/task`, {
       descr: newTask.descr,
       estimateAt: newTask.date,
       userId: 4
     })
-    .then(res =>{
-      Alert.alert("Sucesso!!", "Tarefa cadastrada com sucesso!!!")
-      this.setState({showAddTASK: false }, this.loadTask)
-    })
-    .catch(e =>{
-      Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde" )
-    })
+      .then(res => {
+        Alert.alert("Sucesso!!", "Tarefa cadastrada com sucesso!!!")
+        this.setState({ showAddTASK: false }, this.loadTask)
+      })
+      .catch(e => {
+        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde")
+      })
   }
 
   deleteTask = id => {
     axios.delete(`${server}/task/deleteTask/${id}`)
-    .then(resp =>{
-      this.loadTask()
-    })
-    .catch(e =>{
-      Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde" )
-    })
+      .then(resp => {
+        this.loadTask()
+      })
+      .catch(e => {
+        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde")
+      })
+  }
+
+
+  getImage = () => {
+    switch (this.props.daysAhead) {
+      case 0: return todayImage
+      case 1: return tomorrowImage
+      case 7: return weekImage
+      default: return monthImage
+    }
+  }
+
+  getColor = () => {
+    switch (this.props.daysAhead) {
+      case 0: return CommonStyles.colors.today
+      case 1: return CommonStyles.colors.tomorrow
+      case 7: return CommonStyles.colors.week
+      default: return CommonStyles.colors.month
+    }
   }
 
   render() {
@@ -136,15 +156,19 @@ export default class TaskList extends React.Component {
           onCancel={() => this.setState({ showAddTASK: false })}
           onSave={this.addTask} />
 
-        <ImageBackground source={TodayImage} style={styles.background}>
+        <ImageBackground source={this.getImage()} style={styles.background}>
           <View style={styles.iconBar}>
+            <TouchableOpacity onPress={() => this.navigation.openDrawer()}>
+              <Icon name="bars"
+                size={20} color={CommonStyles.colors.secondary} />
+            </TouchableOpacity>
             <TouchableOpacity onPress={this.toggleFilter}>
               <Icon name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
                 size={20} color={CommonStyles.colors.secondary} />
             </TouchableOpacity>
           </View>
           <View style={styles.titleBar}>
-            <Text style={styles.title}>Hoje</Text>
+            <Text style={styles.title}>{this.props.title}</Text>
             <Text style={styles.subTitle}>{today}</Text>
           </View>
         </ImageBackground>
@@ -152,14 +176,18 @@ export default class TaskList extends React.Component {
           <FlatList data={this.state.visibleTasks} keyExtractor={item => `${item.id}`}
             renderItem={({ item }) => <Task {...item} toggleTask={this.toggleTask} onDelete={this.deleteTask} />} />
         </View>
-        <TouchableOpacity style={styles.addButton} activeOpacity={0.7} onPress={() => this.setState({ showAddTASK: true })}>
+        <TouchableOpacity style={[
+          styles.addButton,
+          {
+            backgroundColor: this.getColor()
+          }]} activeOpacity={0.7} onPress={() => this.setState({ showAddTASK: true })}>
           <Icon name="plus" size={20} color={CommonStyles.colors.secondary} />
         </TouchableOpacity>
         <StatusBar style="light" />
       </View>
     );
   }
-}
+} 
 
 const styles = StyleSheet.create({
   container: {
@@ -192,7 +220,7 @@ const styles = StyleSheet.create({
   iconBar: {
     flexDirection: 'row',
     marginHorizontal: 20,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     marginTop: 40
   },
   addButton: {

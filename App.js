@@ -3,25 +3,59 @@ import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Auth from './src/screens/Auth';
 import TaskList from './src/screens/TaskList';
-
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import Menu from './src/components/Menu';
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+const menuConfig = {
+    labelStyle: {
+        fontWeight: 'normal',
+        fontSize: 20,
+    },
+    activeTintColor: '#080',
+    headerShown: false,
+}
+
+const DrawerNavigator = props => {
+    const email = props.route.params.email
+    return(
+        <Drawer.Navigator screenOptions={menuConfig} 
+                drawerContent={(props) => <Menu {...props} email={email} />} >
+
+            <Drawer.Screen name='today' options={{title: 'Hoje'}}>
+                {props => <TaskList {...props} title="Hoje" daysAhead={0} />}
+            </Drawer.Screen>
+            <Drawer.Screen name='Tomorrow' options={{title: 'Amanhã'}}>
+                {props => <TaskList {...props} title="Amanhã" daysAhead={1} />}
+            </Drawer.Screen>
+            <Drawer.Screen name='Week' options={{title: 'Semana'}}>
+                {props => <TaskList {...props} title="Semana" daysAhead={7} />}
+            </Drawer.Screen>
+            <Drawer.Screen name="Month" options={{ title: 'Mês' }}>
+                {props => <TaskList {...props} title='Mês' daysAhead={30} />}
+            </Drawer.Screen>
+
+        </Drawer.Navigator>
+    );
+}
 
 
-export default function App(props) {
+const AuthNavigator = () => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="AuthOrApp" component={AuthOrApp} />
+            <Stack.Screen name="Auth" component={Auth} />
+            <Stack.Screen name="Home" component={DrawerNavigator} />
+        </Stack.Navigator>
+    );
+};
+
+const Navigator = () =>  {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Auth" screenOptions={{
-                headerShown: false
-            }}>
-                <Stack.Screen name="Auth">
-                    {props => (
-                        <Auth {...props} avancar="TaskList" />
-                    )}
-                </Stack.Screen>
-                <Stack.Screen name="TaskList" component={TaskList} />
-            </Stack.Navigator>
-            
+            <AuthNavigator />
         </NavigationContainer>
     );
 }
