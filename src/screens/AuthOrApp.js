@@ -7,7 +7,7 @@ import {
 import { CommonActions } from '@react-navigation/native';
 
 import axios from 'axios'
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class AuthOrApp extends Component {
 

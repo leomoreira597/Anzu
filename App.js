@@ -5,6 +5,7 @@ import Auth from './src/screens/Auth';
 import TaskList from './src/screens/TaskList';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Menu from './src/components/Menu';
+import AuthOrApp from './src/screens/AuthOrApp';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -59,3 +60,5 @@ const Navigator = () =>  {
         </NavigationContainer>
     );
 }
+
+export default Navigator

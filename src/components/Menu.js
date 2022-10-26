@@ -1,23 +1,20 @@
 import React from 'react'
 import { Platform, ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
-import { CommonActions } from '@react-navigation/native';
-import { Gravatar } from 'react-native-gravatar'
+//import { Gravatar } from 'react-native-gravatar'
 import CommonStyles from '../CommonStyles';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Icon } from 'react-native-vector-icons/Icon';
+
 
 export default props => {
     return (
         <DrawerContentScrollView>
             <View style={styles.header}>
                 <Text>Anzu</Text>
-                <Gravatar style={styles.avatar}
+                {/* <Gravatar style={styles.avatar}
                     options={{
                         email: props.email,
                         secure: true
-                    }} />
+                    }} /> */}
                 <View style={styles.userInfo}>
                     <Text style={styles.name}>
                         {props.email}
@@ -53,7 +50,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 20,
-        color: commonStyles.colors.mainText,
+        color: CommonStyles.colors.mainText,
         marginBottom: 5,
     },
 })

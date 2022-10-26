@@ -46,10 +46,10 @@ export default class TaskList extends React.Component {
     const savedState = JSON.parse(stateString) || initialState
     this.setState({ showDoneTasks: savedState.showDoneTasks }, this.filterTasks)
     this.loadTask()
-    await Font.loadAsync({
-      Lato: require("../../assets/fonts/Lato.ttf")
-    });
-    this.setState({ fontLoaded: true });
+    // await Font.loadAsync({
+    //   Lato: require("../../assets/fonts/Lato.ttf")
+    // });
+    // this.setState({ fontLoaded: true });
 
   }
 
@@ -204,14 +204,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   title: {
-    fontFamily: 'Lato',
+    // fontFamily: 'Lato',
     fontSize: 50,
     color: CommonStyles.colors.secondary,
     marginLeft: 20,
     marginBottom: 20
   },
   subTitle: {
-    fontFamily: 'Lato',
+    // fontFamily: 'Lato',
     color: CommonStyles.colors.secondary,
     fontSize: 20,
     marginLeft: 20,
