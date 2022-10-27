@@ -22,7 +22,6 @@ import CommonStyles from "../CommonStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AddTask from "../screens/AddTask";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Font from 'expo-font';
 import axios from "axios";
 import { server, showError } from "../commun";
 
@@ -46,21 +45,18 @@ export default class TaskList extends React.Component {
     const savedState = JSON.parse(stateString) || initialState
     this.setState({ showDoneTasks: savedState.showDoneTasks }, this.filterTasks)
     this.loadTask()
-    // await Font.loadAsync({
-    //   Lato: require("../../assets/fonts/Lato.ttf")
-    // });
-    // this.setState({ fontLoaded: true });
+
 
   }
 
   loadTask = () => {
-    const maxDate = moment().add({ days: this.props.daysAhead }).format('YYYY-MM-DD')
-    axios.get(`http://10.0.2.2:8080/task/taskUser/4/${maxDate}`)
+    const maxDate = moment().add({ days: this.props.daysAhead }).format('YYYY-MM-DD 23:59:59')
+    axios.get(`http://10.0.2.2:8080/task/taskUser/1/${maxDate}`)
       .then(res => {
         this.setState({ tasks: res.data }, this.filterTasks)
       })
       .catch(e => {
-        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde")
+        Alert.alert("Erro!!", "Verifique sua conexão com a internet ou tente novamente mais tarde")
       })
   }
 
@@ -90,7 +86,7 @@ export default class TaskList extends React.Component {
         this.loadTask()
       })
       .catch(e => {
-        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde")
+        Alert.alert("Erro ao Concluir", "Verifique sua conexão com a internet ou tente novamente mais tarde")
       })
   }
 
@@ -107,14 +103,14 @@ export default class TaskList extends React.Component {
     axios.post(`${server}/task`, {
       descr: newTask.descr,
       estimateAt: newTask.date,
-      userId: 4
+      userId: 1
     })
       .then(res => {
         Alert.alert("Sucesso!!", "Tarefa cadastrada com sucesso!!!")
         this.setState({ showAddTASK: false }, this.loadTask)
       })
       .catch(e => {
-        Alert.alert("Erro ao excluir!", "Verifique sua conexão com a internet e tente novamente mais tarde")
+        Alert.alert("Erro ao cadastrar", "Verifique sua conexão com a internet ou tente novamente mais tarde")
       })
   }
 
@@ -158,7 +154,7 @@ export default class TaskList extends React.Component {
 
         <ImageBackground source={this.getImage()} style={styles.background}>
           <View style={styles.iconBar}>
-            <TouchableOpacity onPress={() => this.navigation.openDrawer()}>
+            <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
               <Icon name="bars"
                 size={20} color={CommonStyles.colors.secondary} />
             </TouchableOpacity>
@@ -187,7 +183,7 @@ export default class TaskList extends React.Component {
       </View>
     );
   }
-} 
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -204,14 +200,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   title: {
-    // fontFamily: 'Lato',
+
     fontSize: 50,
     color: CommonStyles.colors.secondary,
     marginLeft: 20,
     marginBottom: 20
   },
   subTitle: {
-    // fontFamily: 'Lato',
+
     color: CommonStyles.colors.secondary,
     fontSize: 20,
     marginLeft: 20,
@@ -221,7 +217,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 20,
     justifyContent: 'space-between',
-    marginTop: 40
+    marginTop: 40,
   },
   addButton: {
     position: 'absolute',
