@@ -43,6 +43,9 @@ export default props => {
                 <TouchableOpacity onPress={logout}>
                     <View style={styles.logoutIcon}>
                         <Icon name='sign-out' size={30} color='#800' />
+                        <View style={styles.logOut}>
+                            <Text style={styles.logOutText}>Sair</Text>
+                        </View>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -78,4 +81,17 @@ const styles = StyleSheet.create({
         color: CommonStyles.colors.mainText,
         marginBottom: 5,
     },
+    logoutIcon:{
+        marginLeft: 5,
+        marginBottom: 5,
+        flexDirection: "row"
+    },
+    logOut:{
+        justifyContent: "center",
+        marginLeft: 5
+    },
+    logOutText:{
+        color: '#800',
+        fontSize: 15
+    }
 })

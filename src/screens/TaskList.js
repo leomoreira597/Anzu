@@ -28,9 +28,9 @@ import { server, showError } from "../commun";
 
 const initialState = {
   showDoneTasks: true,
-  showAddTASK: false,
+  showAddTask: false,
   visibleTasks: [],
-  fontLoaded: false,
+  //fontLoaded: false,
   tasks: []
 }
 
@@ -71,7 +71,7 @@ export default class TaskList extends React.Component {
       visibleTasks = [...this.state.tasks]
     }
     else {
-      const pending = task => task.doneAt === null
+      const pending = task => !task.doneAt
       visibleTasks = this.state.tasks.filter(pending)
     }
     this.setState({ visibleTasks })
@@ -107,7 +107,7 @@ export default class TaskList extends React.Component {
     })
       .then(res => {
         Alert.alert("Sucesso!!", "Tarefa cadastrada com sucesso!!!")
-        this.setState({ showAddTASK: false }, this.loadTask)
+        this.setState({ showAddTask: false }, this.loadTask)
       })
       .catch(e => {
         Alert.alert("Erro ao cadastrar", "Verifique sua conexão com a internet ou tente novamente mais tarde")
@@ -148,8 +148,8 @@ export default class TaskList extends React.Component {
     const today = moment().locale('pt-br').format('dddd, D [de] MMMM')
     return (
       <View style={styles.container}>
-        <AddTask isVisible={this.state.showAddTASK}
-          onCancel={() => this.setState({ showAddTASK: false })}
+        <AddTask isVisible={this.state.showAddTask}
+          onCancel={() => this.setState({ showAddTask: false })}
           onSave={this.addTask} />
 
         <ImageBackground source={this.getImage()} style={styles.background}>
@@ -176,7 +176,7 @@ export default class TaskList extends React.Component {
           styles.addButton,
           {
             backgroundColor: this.getColor()
-          }]} activeOpacity={0.7} onPress={() => this.setState({ showAddTASK: true })}>
+          }]} activeOpacity={0.7} onPress={() => this.setState({ showAddTask: true })}>
           <Icon name="plus" size={20} color={CommonStyles.colors.secondary} />
         </TouchableOpacity>
         <StatusBar style="light" />
