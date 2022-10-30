@@ -36,6 +36,8 @@ const initialState = {
 
 export default class TaskList extends React.Component {
 
+  
+
   state = {
     ...initialState
   }
@@ -50,8 +52,9 @@ export default class TaskList extends React.Component {
   }
 
   loadTask = () => {
+    const id =  this.props.idHeader
     const maxDate = moment().add({ days: this.props.daysAhead }).format('YYYY-MM-DD 23:59:59')
-    axios.get(`http://10.0.2.2:8080/task/taskUser/1/${maxDate}`)
+    axios.get(`http://10.0.2.2:8080/task/taskUser/${id}/${maxDate}`)
       .then(res => {
         this.setState({ tasks: res.data }, this.filterTasks)
       })
@@ -95,6 +98,7 @@ export default class TaskList extends React.Component {
   //tentar dar mais uma revisada
 
   addTask = newTask => {
+    const id =  this.props.idHeader
     if (!newTask.descr || !newTask.descr.trim()) {
       Alert.alert('Dados Invalidos', 'Descrição não informada !!')
       return
@@ -103,7 +107,7 @@ export default class TaskList extends React.Component {
     axios.post(`${server}/task`, {
       descr: newTask.descr,
       estimateAt: newTask.date,
-      userId: 1
+      userId: id
     })
       .then(res => {
         Alert.alert("Sucesso!!", "Tarefa cadastrada com sucesso!!!")

@@ -22,6 +22,8 @@ const menuConfig = {
 
 const DrawerNavigator = props => {
     const email = props.route.params.email
+    const name = props.route.params.name
+    const id = props.route.params.id
     return (
         <Drawer.Navigator screenOptions={{
             drawerActiveTintColor: '#080',
@@ -31,19 +33,19 @@ const DrawerNavigator = props => {
                 fontSize: 16,
             },
         }}
-            drawerContent={(props) => <Menu {...props} email={email} />} >
+            drawerContent={(props) => <Menu {...props} email={email} name={name} />} >
 
             <Drawer.Screen name='today' options={{ title: 'Hoje' }}>
-                {props => <TaskList {...props} title="Hoje" daysAhead={0} />}
+                {props => <TaskList {...props} title="Hoje" daysAhead={0} idHeader={id}/>}
             </Drawer.Screen>
             <Drawer.Screen name='Tomorrow' options={{ title: 'Amanhã' }}>
-                {props => <TaskList {...props} title="Amanhã" daysAhead={1} />}
+                {props => <TaskList {...props} title="Amanhã" daysAhead={1} idHeader={id}/>}
             </Drawer.Screen>
             <Drawer.Screen name='Week' options={{ title: 'Semana' }}>
-                {props => <TaskList {...props} title="Semana" daysAhead={7} />}
+                {props => <TaskList {...props} title="Semana" daysAhead={7} idHeader={id}/>}
             </Drawer.Screen>
             <Drawer.Screen name="Month" options={{ title: 'Mês' }}>
-                {props => <TaskList {...props} title='Mês' daysAhead={30} />}
+                {props => <TaskList {...props} title='Mês' daysAhead={30} idHeader={id}/>}
             </Drawer.Screen>
         </Drawer.Navigator>
     );

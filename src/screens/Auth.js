@@ -25,8 +25,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Auth(props) {
 
     const [name, setName] = React.useState("")
-    const [email, setEmail] = React.useState("lmoreira6367@gmail.com")
-    const [password, setPassword] = React.useState("12345678")
+    const [email, setEmail] = React.useState("")
+    const [password, setPassword] = React.useState("")
     const [confirmPassword, setConfirmPassword] = React.useState("")
     const [stageNew, setStageNew] = React.useState(false)
     // const [fontsLoaded] = useFonts({
@@ -85,7 +85,7 @@ export default function Auth(props) {
                     routes: [
                         {
                             name: 'Home',
-                            params: resp.config.data
+                            params: resp.headers
                         },
                     ],
                 })

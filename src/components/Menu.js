@@ -37,6 +37,9 @@ export default props => {
                     }} /> */}
                 <View style={styles.userInfo}>
                     <Text style={styles.name}>
+                        {props.name}
+                    </Text>
+                    <Text>
                         {props.email}
                     </Text>
                 </View>
@@ -81,16 +84,16 @@ const styles = StyleSheet.create({
         color: CommonStyles.colors.mainText,
         marginBottom: 5,
     },
-    logoutIcon:{
+    logoutIcon: {
         marginLeft: 5,
         marginBottom: 5,
         flexDirection: "row"
     },
-    logOut:{
+    logOut: {
         justifyContent: "center",
         marginLeft: 5
     },
-    logOutText:{
+    logOutText: {
         color: '#800',
         fontSize: 15
     }
