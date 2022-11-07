@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         padding: 10,
         alignItems: "center",
+        borderRadius: 20
         //fontFamily: 'Lato'
     },
     buttonText: {
