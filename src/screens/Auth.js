@@ -14,35 +14,42 @@ import CommonStyles from "../CommonStyles";
 import { StatusBar } from 'expo-status-bar';
 import AuthInput from "../components/AuthInput";
 import { server, showError,  showSucess} from "../commun";
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-
-SplashScreen.preventAutoHideAsync();
-
+import { CommonActions } from '@react-navigation/native';
+// import { useFonts } from 'expo-font';
+//import * as SplashScreen from 'expo-splash-screen';
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
 export default function Auth(props) {
 
     const [name, setName] = React.useState("")
-    const [email, setEmail] = React.useState("lmoreira6367@gmail.com")
-    const [password, setPassword] = React.useState("12345678")
+    const [email, setEmail] = React.useState("")
+    const [password, setPassword] = React.useState("")
     const [confirmPassword, setConfirmPassword] = React.useState("")
     const [stageNew, setStageNew] = React.useState(false)
-    const [fontsLoaded] = useFonts({
-        'Lato': require('../../assets/fonts/Lato.ttf'),
-      });
+    // const [fontsLoaded] = useFonts({
+    //     'Lato': require('../../assets/fonts/Lato.ttf'),
+    //   });
+
+    //   React.useEffect(() => {
+    //     async function prepare() {
+    //       await SplashScreen.preventAutoHideAsync();
+    //     }
+    //     prepare();
+    //   }, []);
     
-      const onLayoutRootView = React.useCallback(async () => {
-        if (fontsLoaded) {
-          await SplashScreen.hideAsync();
-        }
-      }, [fontsLoaded]);
     
-      if (!fontsLoaded) {
-        return null;
-      }
+    //   const onLayoutRootView = React.useCallback(async () => {
+    //     if (fontsLoaded) {
+    //       await SplashScreen.hideAsync();
+    //     }
+    //   }, [fontsLoaded]);
+    
+    //   if (!fontsLoaded) {
+    //     return null;
+    //   }
 
 
 
@@ -69,8 +76,20 @@ export default function Auth(props) {
             password: password
         })
         .then(resp =>{
+            AsyncStorage.setItem('userData', JSON.stringify(resp.config.data))
             axios.defaults.headers.common['Authorization'] = resp.headers.authorization
-            props.navigation.push(props.avancar)
+            AsyncStorage.setItem('userDataToken', JSON.stringify(resp.headers.authorization))
+            props.navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'Home',
+                            params: resp.headers
+                        },
+                    ],
+                })
+            )
         })
         .catch(e =>{
             Alert.alert('Algo não deu certo!!', 'Revise seus dados, sua conexão com a internet e tente novamente')
@@ -108,7 +127,8 @@ export default function Auth(props) {
     const validForm = validations.reduce((t, a) => t && a)
 
     return (
-        <ImageBackground source={backgroundImage} style={styles.background} onLayout={onLayoutRootView}>
+        <ImageBackground source={backgroundImage} style={styles.background}> 
+        
             <Text style={styles.title}>
                 Anzu
             </Text>
@@ -164,13 +184,13 @@ const styles = StyleSheet.create({
         color: CommonStyles.colors.secondary,
         fontSize: 70,
         marginBottom: 10,
-        fontFamily: 'Lato'
+        //fontFamily: 'Lato'
     },
     input: {
         marginTop: 10,
         backgroundColor: "#FFF",
         padding: Platform.OS == 'ios' ? 15 : 10,
-        fontFamily: 'Lato'
+        //fontFamily: 'Lato'
     },
     formContainer: {
         backgroundColor: "rgba(0, 0, 0, 0.8)",
@@ -182,19 +202,20 @@ const styles = StyleSheet.create({
         marginTop: 10,
         padding: 10,
         alignItems: "center",
-        fontFamily: 'Lato'
+        borderRadius: 20
+        //fontFamily: 'Lato'
     },
     buttonText: {
         color: "#FFF",
         fontSize: 20,
-        fontFamily: 'Lato'
+        //fontFamily: 'Lato'
     },
     info: {
         color: "#FFF",
         fontSize: 20,
         textAlign: "center",
         marginBottom: 10,
-        fontFamily: 'Lato'
+        //fontFamily: 'Lato'
     },
 
 })
