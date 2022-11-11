@@ -26,9 +26,9 @@ export default class AuthOrApp extends Component {
 
         if (userData && userDataToken) {
             axios.defaults.headers.common['Authorization'] = userDataToken
-            // this.props.navigation.navigate('Home', userData)
+            //this.props.navigation.navigate('Home', userData)
             this.props.navigation.dispatch(
-                CommonActions.reset({
+                CommonActions.reset({   
                     index: 0,
                     routes: [
                         {
