@@ -76,9 +76,8 @@ export default function Auth(props) {
             password: password
         })
         .then(resp =>{
-            AsyncStorage.setItem('userData', JSON.stringify(resp.config.data))
+            AsyncStorage.setItem('userData', JSON.stringify(resp.headers))
             axios.defaults.headers.common['Authorization'] = resp.headers.authorization
-            AsyncStorage.setItem('userDataToken', JSON.stringify(resp.headers.authorization))
             props.navigation.dispatch(
                 CommonActions.reset({
                     index: 0,
