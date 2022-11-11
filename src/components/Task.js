@@ -27,10 +27,6 @@ export default function Task(props) {
         textDecorationLine: 'line-through'
     } : {}
 
-    const [fontsLoaded] = useFonts({
-        'Lato': require("../../assets/fonts/Lato.ttf")
-    });
-
     const date = props.doneAt ? props.doneAt : props.estimateAt
     const formattedDate = moment(props.estimateAt).locale('pt-br').format('dddd, D [de] MMMM')
 
@@ -122,12 +118,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     desc: {
-        fontFamily: 'Lato',
         color: CommonStyles.colors.mainText,
         fontSize: 15
     },
     date: {
-        fontFamily: 'Lato',
         color: CommonStyles.colors.subText,
         fontSize: 12
     },
@@ -145,7 +139,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     excludeText: {
-        fontFamily: 'Lato',
         color: "#FFF",
         fontSize: 20,
         margin: 10

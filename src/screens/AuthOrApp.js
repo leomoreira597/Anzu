@@ -14,18 +14,15 @@ export default class AuthOrApp extends Component {
     componentDidMount = async () => {
         const userDataJson = await AsyncStorage.getItem('userData')
         let userData = null
-        const userDataTokenJson = await AsyncStorage.getItem('userDataToken')
-        let userDataToken = null
 
         try {
             userData = JSON.parse(userDataJson)
-            userDataToken = JSON.parse(userDataTokenJson)
         } catch (e) {
             // userData está inválido
         }
 
-        if (userData && userDataToken) {
-            axios.defaults.headers.common['Authorization'] = userDataToken
+        if (userData && userData.authorization) {
+            axios.defaults.headers.common['Authorization'] = userData.authorization
             //this.props.navigation.navigate('Home', userData)
             this.props.navigation.dispatch(
                 CommonActions.reset({   
